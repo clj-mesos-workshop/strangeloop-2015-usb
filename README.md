@@ -28,3 +28,18 @@ vagrant
 └── windows
 └── vagrant_1.7.4.msi
 ```
+
+## Directory structure for Virtualbox
+
+```
+virtualbox
+├── SHA256SUMS
+├── VirtualBox-5.0.4-102546-OSX.dmg
+├── VirtualBox-5.0.4-102546-Win.exe
+├── linux-all
+│   ├── VirtualBox-5.0.4-102546-Linux_amd64.run
+│   └── VirtualBox-5.0.4-102546-Linux_x86.run
+└── linux-ubuntu
+├── virtualbox-5.0_5.0.4-102546~Ubuntu~trusty_amd64.deb
+    └── virtualbox-5.0_5.0.4-102546~Ubuntu~trusty_i386.deb
+```
