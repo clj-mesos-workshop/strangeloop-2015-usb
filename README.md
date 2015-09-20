@@ -23,9 +23,11 @@ we have some requirements. Vagrant does allow for using a cloud based
 provider that you can try at a later time after the workshop. We
 recommend the following system requirements.
 
-CPU: At least dual core, ideally quad-core (We're running 3 VMs)
-Memory: 4GB at least, 8 GB ideally
-Disk: 5 GB free space at least, 8 GB ideally. (There are ways to use
+
+
+- CPU: At least dual core, ideally quad-core (We're running 3 VMs)
+- Memory: 4GB at least, 8 GB ideally
+- Disk: 5 GB free space at least, 8 GB ideally. (There are ways to use
 the USB disk space too, let us know if you want to do that)
 
 
