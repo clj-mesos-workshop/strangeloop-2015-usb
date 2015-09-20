@@ -7,10 +7,11 @@ LEIN_HOME=$(CURDIR)/tmp/lein-home
 LEIN_EXEC=$(CURDIR)/bin/lein
 VAGRANT_SHASUM_PATH=$(CURDIR)/vagrant/installers/1.7.4_SHA256SUMS
 VIRTUALBOX_SHASUM_PATH=$(CURDIR)/virtualbox/SHA256SUMS
+VAGRANT_BOXES_SHASUM=$(CURDIR)/vagrant/boxes/SHA256_BOXES
 
 .PHONY: help ?
 
-all:
+all: validate-installers validate-vagrant-boxes
 
 validate-installers: check-vagrant-installers check-virtualbox-installers
 
@@ -86,10 +87,19 @@ download-vagrant: vagrant-dirs vagrant/installers/mac/vagrant_1.7.4.dmg \
 # Not making a Download VirtualBox
 
 
-sync-vagrant-box: vagrant/boxes/edpaget-VAGRANTSLASH-mesos
+sync-vagrant-boxes: vagrant/boxes/edpaget-mesos-virtualbox.box vagrant/boxes/edpaget-mesos-vmware.box
 
-vagrant/boxes/edpaget-VAGRANTSLASH-mesos:
-	cp -r ${HOME}/.vagrant.d/boxes/edpaget-VAGRANTSLASH-mesos vagrant/boxes
+validate-vagrant-boxes:
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/boxes/edpaget-mesos-virtualbox.box  $(VAGRANT_BOXES_SHASUM)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/boxes/edpaget-mesos-vmware.box  $(VAGRANT_BOXES_SHASUM)
+
+vagrant/boxes/edpaget-mesos-virtualbox.box:
+	wget https://atlas.hashicorp.com/edpaget/boxes/mesos/versions/0.1.0/providers/virtualbox.box -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_BOXES_SHASUM)
+
+vagrant/boxes/edpaget-mesos-vmware.box:
+	wget https://atlas.hashicorp.com/edpaget/boxes/mesos/versions/0.1.0/providers/vmware.box -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_BOXES_SHASUM)
 
 
 vagrant-clean:
