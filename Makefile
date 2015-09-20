@@ -11,6 +11,9 @@ VAGRANT_BOXES_SHASUM=$(CURDIR)/vagrant/boxes/SHA256_BOXES
 
 .PHONY: help ?
 
+list:
+	cat Makefile | grep "^[A-z]" | awk '{print $$1}'
+
 all: validate-installers validate-vagrant-boxes
 
 validate-installers: check-vagrant-installers check-virtualbox-installers
@@ -102,6 +105,12 @@ vagrant/boxes/edpaget-mesos-vmware.box:
 	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_BOXES_SHASUM)
 
 
+vagrant-install-box:
+	vagrant box add vagrant/boxes/edpaget-mesos-virtualbox.box --name edpaget/mesos
+
+vagrant-remove-box:
+	vagrant box remove edpaget/mesos
+
 vagrant-clean:
 	rm -r $(VAGRANT_HOME)/setup_version || true
 	rm -r $(VAGRANT_HOME)/data || true
@@ -140,4 +149,17 @@ help: ?
 
 ?:
 	@echo
-	@echo ""
+	@echo "list.................................. List all make targets"
+	@echo "update................................ Update the code and installers"
+	@echo "validate-installers................... Check against shasum for all installers"
+	@echo "check-vagrant-installers.............. Check against shasum for vagrant installers"
+	@echo "check-virtualbox-installers........... Check against shasum for virtualbox installers"
+	@echo "vagrant-full-update................... Updates only Vagrant installers"
+	@echo "sync-vagrant-boxes.................... Check for the vagrant boxes"
+	@echo "vagrant-install-box................... Install the Virtualbox image to local vagrant"
+	@echo "vagrant-remove-box...................  Remove the Virtualbox image installed to local vagrant"
+	@echo "hello-mesos-git-pull.................. Update code for hello-mesos"
+	@echo "hello-mesos-lein-deps................. Download the leiningen deps"
+	@echo "hello-mesos-up........................ Start the Vagrant instances for hello-mesos"
+	@echo "hello-mesos-stop...................... Stop/halt the Vagrant instances for hello-mesos"
+	@echo "hello-mesos-destroy................... Completely removes the Vagrant instances for hello-mesos"
