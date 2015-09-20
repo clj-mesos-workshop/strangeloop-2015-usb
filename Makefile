@@ -5,11 +5,33 @@ SHASUM_EXEC=shasum
 SHASUM_ARGS=-a 256
 LEIN_HOME=$(CURDIR)/tmp/lein-home
 LEIN_EXEC=$(CURDIR)/bin/lein
+VAGRANT_SHASUM_PATH=$(CURDIR)/vagrant/installers/1.7.4_SHA256SUMS
+VIRTUALBOX_SHASUM_PATH=$(CURDIR)/virtualbox/SHA256SUMS
+
 .PHONY: help ?
 
 all:
 
-validate-installers:
+validate-installers: check-vagrant-installers check-virtualbox-installers
+
+
+check-vagrant-installers:
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/mac/vagrant_1.7.4.dmg $(VAGRANT_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/windows/vagrant_1.7.4.msi  $(VAGRANT_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/linux-centos/32-bit/vagrant_1.7.4_i686.rpm  $(VAGRANT_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/linux-centos/64-bit/vagrant_1.7.4_x86_64.rpm  $(VAGRANT_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/linux-debian/32-bit/vagrant_1.7.4_i686.deb  $(VAGRANT_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh vagrant/installers/linux-debian/64-bit/vagrant_1.7.4_x86_64.deb  $(VAGRANT_SHASUM_PATH)
+
+
+check-virtualbox-installers:
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/VirtualBox-5.0.4-102546-OSX.dmg $(VIRTUALBOX_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/VirtualBox-5.0.4-102546-Win.exe $(VIRTUALBOX_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/linux-ubuntu/virtualbox-5.0_5.0.4-102546~Ubuntu~trusty_i386.deb $(VIRTUALBOX_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/linux-ubuntu/virtualbox-5.0_5.0.4-102546~Ubuntu~trusty_amd64.deb $(VIRTUALBOX_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/linux-all/VirtualBox-5.0.4-102546-Linux_x86.run $(VIRTUALBOX_SHASUM_PATH)
+	$(CURDIR)/bin/check-sha256sum.sh virtualbox/linux-all/VirtualBox-5.0.4-102546-Linux_amd64.run $(VIRTUALBOX_SHASUM_PATH)
+
 
 update: vagrant-full-update hello-mesos-git-pull lein-install hello-mesos-lein-deps
 
@@ -31,21 +53,27 @@ vagrant/installers/1.7.4_SHA256SUMS: | vagrant-dirs
 
 vagrant/installers/mac/vagrant_1.7.4.dmg: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4.dmg -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 vagrant/installers/windows/vagrant_1.7.4.msi: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4.msi -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 vagrant/installers/linux-centos/32-bit/vagrant_1.7.4_i686.rpm: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_i686.rpm -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 vagrant/installers/linux-centos/64-bit/vagrant_1.7.4_x86_64.rpm: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_x86_64.rpm -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 vagrant/installers/linux-debian/32-bit/vagrant_1.7.4_i686.deb: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_i686.deb -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 vagrant/installers/linux-debian/64-bit/vagrant_1.7.4_x86_64.deb: | vagrant-dirs
 	wget https://dl.bintray.com/mitchellh/vagrant/vagrant_1.7.4_x86_64.deb -O $@
+	$(CURDIR)/bin/check-sha256sum.sh $@ $(VAGRANT_SHASUM_PATH)
 
 download-vagrant: vagrant-dirs vagrant/installers/mac/vagrant_1.7.4.dmg \
 		vagrant/installers/windows/vagrant_1.7.4.msi \
@@ -54,6 +82,8 @@ download-vagrant: vagrant-dirs vagrant/installers/mac/vagrant_1.7.4.dmg \
 		vagrant/installers/linux-debian/32-bit/vagrant_1.7.4_i686.deb \
 		vagrant/installers/linux-debian/64-bit/vagrant_1.7.4_x86_64.deb \
 		vagrant/installers/1.7.4_SHA256SUMS
+
+# Not making a Download VirtualBox
 
 
 sync-vagrant-box: vagrant/boxes/edpaget-VAGRANTSLASH-mesos
